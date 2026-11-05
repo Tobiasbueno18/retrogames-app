@@ -19,7 +19,7 @@ async function carregarJogos() {
         const resposta = await fetch(API_URL + '/listar')
         const jogos = await resposta.json()
 
-        lista.innerHTML =""
+        lista.innerHTML = ""
 
         if(jogos.length === 0){
             mensagemVazia.hidden = false 
@@ -101,3 +101,4 @@ function criarCard(titulo, plataforma, desenvolvedora, imagem, preco) {
     card.append(capa, info)
     lista.appendChild(card)
 }
+carregarJogos()
