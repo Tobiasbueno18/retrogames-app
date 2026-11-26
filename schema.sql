@@ -1,23 +1,22 @@
-CREATE DATABASE IF NOT EXISTS db_retrogames;
+drop database if exists db_retrogames;
+create database db_retrogames;
+use db_retrogames;
 
-USE db_retrogames;
-
-CREATE TABLE IF NOT EXISTS jogos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(150) NOT NULL,
-    plataforma VARCHAR(100) NOT NULL,
-    desenvolvedora VARCHAR(150) NOT NULL,
-    imagem_url VARCHAR(2048) NOT NULL,
-    preco DECIMAL(10,2) NOT NULL,
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+create table jogos(
+    id int not null auto_increment primary key,
+    titulo varchar(150) not null,
+    desenvolvedora varchar(150) not null,
+    genero varchar(100) not null, 
+    plataforma varchar(100) not null, 
+    imagem_url varchar(500) not null, 
+    preco decimal(10,2) not null
 );
-INSERT INTO jogos (titulo, plataforma, desenvolvedora, imagem_url, preco)
-VALUES
-('Super Mario World', 'SNES', 'Nintendo',
-'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTraCIE9Us-7DIEtpH4DzckhX-hxi1GJbbo023AC8QCBzYdFVVVbIzWz0Pm&s=10', 149.90),
 
-('Sonic', 'Mega Drive', 'Sega',
-'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD_j4Bpx8KxtykRFFagEadfwPTmmvyID2ngZ4Bxkoj9AaN1aKB8qNmzGyJ&s=10', 99.90),
+insert into jogos(titulo, desenvolvedora, genero, plataforma, imagem_url, preco)
+values('Super Mario World', 'Nintendo', 'Plataforma', 'SNES', 'https://upload.wikimedia.org/wikipedia/pt/0/06/Super-Mario-World.jpg?utm_source=pt.wikipedia.org&utm_campaign=parser&utm_content=thumbnail_unscaled', 150.00);
+insert into jogos(titulo, desenvolvedora, genero, plataforma, imagem_url, preco)
+values('Sonic the Hedgehog', 'Sonic Team', 'Plataforma', 'Mega Drive', 'https://images.openai.com/static-rsc-4/M-vtFoPUtSxXuytXfxVeV_ShN-aXPlDZi-paYF56qqYYMVzRUlvRektq3vyDMwgZmDCFiUSMqzXoFG3HlSPkQ1KTuDGgNpUgxIe5G2oPladn9F2TWmU-2TCqcihQlOdw9uguio2jelnZkTHToD1UyYAeQK-5pgpdwbhTcny_LXh3D_40iZB2x-7zgPnfRY8v?purpose=fullsize', 130.00);
+insert into jogos(titulo, desenvolvedora, genero, plataforma, imagem_url, preco)
+values('Street Fighter II Turbo', 'Capcom', 'Luta', 'SNES', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSayzmP0IYYp8ce0l7nFHJ80l9FD3MwmSX45IC00crRkLek9017XGu9Wq_F&s=10', 250.00);
 
-('Crash Bandicoot', 'PlayStation 1', 'Naughty Dog',
-'https://static.wikia.nocookie.net/crashbandicoot/images/5/58/Bandicoot.png/revision/latest?cb=20080719231406&path-prefix=pt', 129.90);
+select * from jogos;

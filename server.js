@@ -1,62 +1,99 @@
-const express = require('express');
-const cors = require('cors');
-const mysql = require('mysql2');
+const express = require("express")
+const cors = require("cors")
+const mysql = require("mysql2")
 
 const db = mysql.createConnection({
-    host: "localhost", 
+    host: "localhost",
     user: "root",
     password: "",
     database: "db_retrogames"
 })
 
-db.connect((erro)=>{
-    if(erro){
+db.connect((erro) => {
+    if (erro) {
         console.error("Erro ao conectar:", erro)
-    }else{
+    } else {
         console.log("Conectado ao DB")
     }
 })
 
 const mostrarJogos = (req, res) => {
-    const sql = "SELECT titulo , plataforma, desenvolvedora, imagem_url AS imagem, preco FROM jogos"
-    db.query(sql, (erro, resultado) => {
-        if(erro){
-            return res.status(500).json({erro: "Erro ao consultar o BD"})
+    const sql = "SELECT id, titulo, desenvolvedora, genero, plataforma, imagem_url AS imagem, preco FROM jogos"
+
+    db.query(sql, (erro, resultados) => {
+        if (erro) {
+            return res.status(500).send("Erro ao consultar o DB")
         }
-        res.json(resultado)
+
+        res.send(resultados)
     })
 }
-//titulo, plataforma, desenvolvedora, imagem_url, preco
-const cadastrarJogo = (req, res) => {
-    const { titulo, plataforma, desenvolvedora, imagem, preco } = req.body
 
-    if(titulo && plataforma && desenvolvedora && imagem && preco){
-        const sql = "INSERT INTO jogos (titulo, plataforma, desenvolvedora, imagem_url, preco) VALUES (?, ?, ?, ?, ?)"
-        const valores = [titulo, plataforma, desenvolvedora, imagem, preco]
+const novoJogo = (req, res) => {
+    const { titulo, desenvolvedora, genero, plataforma, imagem, preco } = req.body
+
+    if (titulo && desenvolvedora && genero && plataforma && imagem && preco) {
+        const sql = "INSERT INTO jogos (titulo, desenvolvedora, genero, plataforma, imagem_url, preco) VALUES (?, ?, ?, ?, ?, ?)"
+        const valores = [titulo, desenvolvedora, genero, plataforma, imagem, preco]
 
         db.query(sql, valores, (erro, resultado) => {
-            if(erro){
-                return res.status(500).json({erro: "Erro ao cadastrar jogo"})
-    
+            if (erro) {
+                return res.status(500).send("Erro ao inserir jogo")
             }
+
             res.send("Jogo cadastrado com sucesso")
         })
-    }else{
-        res.status(400).json({erro: "Erro: preencha todos os campos"})
+    } else {
+        res.status(400).send("Erro: Preencha todos os campos")
     }
+}
+
+const atualizarJogo = (req, res) => {
+    const { id } = req.params
+    const { titulo, desenvolvedora, genero, plataforma, imagem, preco } = req.body
+
+    if (titulo && desenvolvedora && genero && plataforma && imagem && preco) {
+        const sql = "UPDATE jogos SET titulo = ?, desenvolvedora = ?, genero = ?, plataforma = ?, imagem_url = ?, preco = ? WHERE id = ?"
+        const valores = [titulo, desenvolvedora, genero, plataforma, imagem, preco, id]
+
+        db.query(sql, valores, (erro, resultado) => {
+            if (erro) {
+                return res.status(500).send("Erro ao atualizar jogo")
+            }
+
+            res.send("Jogo atualizado com sucesso")
+        })
+    } else {
+        res.status(400).send("Erro: Preencha todos os campos")
+    }
+}
+
+const deletarJogo = (req, res) => {
+    const { id } = req.params
+    const sql = "DELETE FROM jogos WHERE id = ?"
+
+    db.query(sql, [id], (erro, resultado) => {
+        if (erro) {
+            return res.status(500).send("Erro ao deletar jogo")
+        }
+
+        res.send("Jogo deletado com sucesso")
+    })
 }
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 
-const PORT = 3000
+const porta = 3000
 
 app.get("/listar", mostrarJogos)
-app.post("/cadastrar", cadastrarJogo)
+app.post("/cadastrar", novoJogo)
+app.put("/atualizar/:id", atualizarJogo)
+app.delete("/deletar/:id", deletarJogo)
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`)
+app.listen(porta, () => {
+    console.log(`Servidor rodando na porta ${porta}`)
 })
